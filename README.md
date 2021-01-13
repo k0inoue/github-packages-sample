@@ -49,14 +49,17 @@ $HOME/
 [こちらのページ](https://github.com/settings/tokens)から、GitHubのPersonal access tokensを生成する。
 
 1. \[Develops settings\]
+---
 
-[images/step1.png]
+![step1](images/step1.png)
 
 2. \[Personal access tokens\] --> \[Generate new token\]
+---
 
-[images/step2.png]
+![step2](images/step2.png)
 
 3. \[Select scopes\]
+---
 
 以下にチェックを入れて、ページ下部にある、\[Generate token\]をクリック。
 
@@ -64,12 +67,14 @@ $HOME/
 - read:packages
 - delete:packages
 
-[images/step3.png]
+![step3](images/step3.png)
 
 4. 生成されたトークンを保存
+---
+
 生成されたトークン(下の画像の黒塗り部分)をコピーして、`$HOME/.github-token`に保存する。
 
-[images/step4.png]
+![step4](images/step4.png)
 
 
 念の為、自分以外は読み書きできない権限に変更しておく。
