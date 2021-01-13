@@ -1,6 +1,15 @@
 # github-packages-sample
 
 GitHub PackagesにDockerのイメージを登録して利用するサンプルプロジェクト。
+- [github-packages-sample](#github-packages-sample)
+    - [手順概略](#手順概略)
+    - [ファイル構成](#ファイル構成)
+    - [Personal access tokensの生成](#personal-access-tokensの生成)
+    - [Dockerコマンドによる操作](#dockerコマンドによる操作)
+    - [簡略用シェルスクリプト](#簡略用シェルスクリプト)
+        - [### 簡略用シェルスクリプト用の設定ファイル](#-簡略用シェルスクリプト用の設定ファイル)
+    - [注意点](#注意点)
+
 
 ## 手順概略
 GitHub PackagesでDockerのイメージを利用する大まかな手順は以下となる。
@@ -43,22 +52,27 @@ $HOME/
 |-- .github-token       GitHub Packagesにアクセスするためのトークン(各自用意)
 ```
 
-## 手動による手順詳細
+## Personal access tokensの生成
 
-### Personal access tokensの生成
-[こちらのページ](https://github.com/settings/tokens)から、GitHubのPersonal access tokensを生成する。
+[こちらのページ](https://github.com/settings/tokens)から以下の手順に沿って、GitHubのPersonal access tokensを生成する。
 
-1. \[Develops settings\]
+### 1. \[Develops settings\]をクリック
 ---
 
 ![step1](images/step1.png)
 
-2. \[Personal access tokens\] --> \[Generate new token\]
+<br />
+
+
+### 2. \[Personal access tokens\] --> \[Generate new token\]をクリック
 ---
 
 ![step2](images/step2.png)
 
-3. \[Select scopes\]
+<br />
+
+
+### 3. \[Select scopes\]で権限設定
 ---
 
 以下にチェックを入れて、ページ下部にある、\[Generate token\]をクリック。
@@ -69,7 +83,10 @@ $HOME/
 
 ![step3](images/step3.png)
 
-4. 生成されたトークンを保存
+<br />
+
+
+### 4. 生成されたトークンを保存
 ---
 
 生成されたトークン(下の画像の黒塗り部分)をコピーして、`$HOME/.github-token`に保存する。
@@ -83,7 +100,7 @@ $HOME/
 chmod 600 $HOME/.github-token
 ```
 
-### Dockerコマンドによる操作
+## Dockerコマンドによる操作
 
 各手順のdockerコマンドは以下の通り。
 
@@ -110,7 +127,7 @@ Dockerfile内で指定する場合は以下となる。
 FROM docker.pkg.github.com/GitHubユーザ名/リポジトリ名/配布パッケージ名:タグ
 ```
 
-### 簡略用シェルスクリプト
+## 簡略用シェルスクリプト
 
 プロジェクトのルートディレクトリに移動して、以下を実行。
 (各スクリプトは`chmod +x cmd/*.sh`などで実行権限を追加しておくこと)
@@ -126,8 +143,9 @@ cmd/login.sh                # docker login コマンドでgithubにログイン
 
 
 ### 簡略用シェルスクリプト用の設定ファイル
+---
 
-以下の変数を`config.sh`で設定しており、各スクリプトから読み込んでいる。
+以下の変数を`cmd/config.sh`で設定しており、各スクリプトから読み込んでいる。
 プロジェクトに合わせて設定すること。
 
 ```
@@ -146,6 +164,7 @@ GITHUB_TOKEN_FILE=.github-token
 # ビルドするDockerfileパス
 DOCKER_FILE_PATH=docker/Dockerfile
 ```
+
 
 ## 注意点
 
