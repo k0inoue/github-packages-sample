@@ -7,7 +7,6 @@ GitHub PackagesにDockerのイメージを登録して利用するサンプル�
     - [Personal access tokensの生成](#personal-access-tokensの生成)
     - [Dockerコマンドによる操作](#dockerコマンドによる操作)
     - [簡略用シェルスクリプト](#簡略用シェルスクリプト)
-        - [### 簡略用シェルスクリプト用の設定ファイル](#-簡略用シェルスクリプト用の設定ファイル)
     - [注意点](#注意点)
 
 
@@ -28,6 +27,7 @@ GitHub PackagesでDockerのイメージを利用する大まかな手順は以�
 
 本プロジェクトでは、便宜上、手順3〜7を行うためのスクリプトを用意している。
 
+
 ## ファイル構成
 本リポジトリのファイル構成は以下となる。
 
@@ -36,13 +36,17 @@ github-packages-sample/
 |-- .gitignore
 |-- LICENSE
 |-- README.md
-|-- build.sh            Dockerビルドスクリプト
-|-- config.sh           シェルスクリプト共用設定ファイル
-|-- docker/             サンプルのDockerプロジェクト
-|   |-- Dockerfile
-|-- login.sh            GitHubへのログインスクリプト
-|-- pull.sh             GitHubからイメージをpullするスクリプト
-|-- push.sh             GitHubへのイメージをpushするスクリプト
+|-- docker                  サンプルのDockerプロジェクト
+|   |-- base                ベースイメージ作成用
+|   |   |-- Dockerfile
+|   |-- custom              ベースからの派生イメージ作成用
+|   |   |-- Dockerfile
+|-- cmd/
+|   |-- build.sh            Dockerビルドスクリプト
+|   |-- config.sh           シェルスクリプト共用設定ファイル
+|   |-- login.sh            GitHubへのログインスクリプト
+|   |-- pull.sh             GitHubからイメージをpullするスクリプト
+|   |-- push.sh             GitHubへのイメージをpushするスクリプト
 ```
 
 リポジトリとは別に、アクセストークンを保存したファイルを以下に置いている想定。
@@ -100,6 +104,7 @@ $HOME/
 chmod 600 $HOME/.github-token
 ```
 
+
 ## Dockerコマンドによる操作
 
 各手順のdockerコマンドは以下の通り。
@@ -126,6 +131,7 @@ Dockerfile内で指定する場合は以下となる。
 ```
 FROM docker.pkg.github.com/GitHubユーザ名/リポジトリ名/配布パッケージ名:タグ
 ```
+
 
 ## 簡略用シェルスクリプト
 
