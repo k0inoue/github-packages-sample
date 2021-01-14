@@ -10,10 +10,17 @@ on:
     tags:
       - v*
 
+    paths:
+    - 'docker/**'
+
   # Run tests for any PRs.
   pull_request:
+    paths:
+    - 'docker/**'
+
 
 env:
+  DOCKER_BUILDKIT: 1
   BASE_IMAGE_NAME: gpack-base
   BASE_DOCKER_FILE: docker/base/Dockerfile
   CUSTOM_IMAGE_NAME: gpack-custom
@@ -81,6 +88,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
 
       - name: Custom Image Build and Tests
         run: |
