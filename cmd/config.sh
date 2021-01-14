@@ -8,7 +8,7 @@ GITHUB_USER=k0inoue
 GITHUB_REPOSITORY=github-packages-sample
 
 # 配布パッケージ名(Dockerのイメージ名となる)
-PACKAGE_NAME=gpack-sample
+PACKAGE_NAME=gpack-base-manual
 
 # GitHubのPersonal access tokensを保存したファイルのパス
 GITHUB_TOKEN_FILE=${HOME}/.github-token

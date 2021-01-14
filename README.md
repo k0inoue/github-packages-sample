@@ -3,12 +3,28 @@
 GitHub PackagesにDockerのイメージを登録して利用するサンプルプロジェクト。
 
 - [github-packages-sample](#github-packages-sample)
+    - [注意点](#注意点)
     - [手順概略](#手順概略)
     - [ファイル構成](#ファイル構成)
     - [Personal access tokensの生成](#personal-access-tokensの生成)
     - [Dockerコマンドによる操作](#dockerコマンドによる操作)
     - [簡略用シェルスクリプト](#簡略用シェルスクリプト)
-    - [注意点](#注意点)
+
+
+## 注意点
+
+本リポジトリをforkして試す場合は、以下の点に注意。
+
+- `cmd/config.sh`の`GITHUB_USER`を各自のGitHubアカウント名に変更すること
+- [Personal access tokensの生成](#personal-access-tokensの生成)に沿ってアクセストークンを生成しておくこと
+  - 補足：`docker pull`するのにもPersonal access tokensによる認証が必要
+      - pullだけなら、各自のアカウントで「read:packages」にチェックを入れたトークンを作ればOK
+- forkしたリポジトリに対してpushすると、DockerイメージのbuildとpushをGitHub Action上で行う
+  - 本リポジトリでは`base/Dockerfile`のbuildとpushには成功している
+  - 本リポジトリでは`cutom/Dockerfile`のbuildに失敗している
+    - GitHub ActionsからGitHub Packagesのイメージのpullができないかも？
+    - そもそも初回はベースがpushされていないので失敗する
+      - 本来はymlファイルを分けちゃだめ（それぞれ並列で実行されるので）
 
 
 ## 手順概略
@@ -34,6 +50,9 @@ GitHub PackagesでDockerのイメージを利用する大まかな手順は以�
 
 ```
 github-packages-sample/
+|-- .github/workflows       サンプルのDockerプロジェクト
+|   |-- base-publish.yml    GitHubへのpush時にベースイメージをDocker build & push
+|   |-- custom-publish.yml  GitHubへのpush時にカスタムイメージをDocker build & push
 |-- .gitignore
 |-- LICENSE
 |-- README.md
@@ -163,19 +182,21 @@ GITHUB_USER=k0inoue
 GITHUB_REPOSITORY=github-packages-sample
 
 # 配布パッケージ名(Dockerのイメージ名となる)
-PACKAGE_NAME=gpack-sample
+PACKAGE_NAME=gpack-base-manual
 
 # GitHubのPersonal access tokensを保存したファイルのパス
-GITHUB_TOKEN_FILE=.github-token
+GITHUB_TOKEN_FILE=${HOME}/.github-token
 
 # ビルドするDockerfileパス
-DOCKER_FILE_PATH=docker/Dockerfile
+DOCKER_FILE_PATH=docker/base/Dockerfile
 ```
 
+## 派生イメージ(docker/Dockerfile)のビルド実行例
 
-## 注意点
+本リポジトリのルートディレクトリで以下のコマンドを実行する。
 
-- DockerイメージをpullするのにもPersonal access tokensによる認証が必要
-    - 各自のアカウントで「read:packages」にチェックを入れたトークンがあればOK
+```
+docker build . -f docker/custom/Dockerfile -t gpack-custom-manual
 
+```
 
