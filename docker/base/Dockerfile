@@ -1,36 +1,36 @@
 ARG ROS_DISTRO=melodic
 FROM osrf/ros:${ROS_DISTRO}-desktop-full
 
-## Dockerのビルドに必要なツールのインストール
-##------------------------------------------------
-#RUN apt-get update -q && apt-get upgrade -yq && apt-get install -y --no-install-recommends \
-#        libglib2.0-dev-bin \
-#        dh-python \
-#        apt-utils \
-#        python-pip \
-#        lsb-release \
-#        tzdata \
-#    && rm -rf /var/lib/apt/lists/* \
-#    && pip install --upgrade pip
-#
-## 依存ツール/ライブラリのインストール
-##------------------------------------------------
-#RUN apt-get update -q && apt-get install -y --no-install-recommends \
-#        ros-${ROS_DISTRO}-turtlebot3 \
-#        ros-${ROS_DISTRO}-turtlebot3-msgs \
-#        ros-${ROS_DISTRO}-turtlebot3-simulations \
-#        ros-${ROS_DISTRO}-aruco-ros \
-#    && rm -rf /var/lib/apt/lists/*
-#
-## 依存ツール/ライブラリのインストール
-##------------------------------------------------
-#RUN apt-get update -q && apt-get install -y --no-install-recommends \
-#        gnome-terminal \
-#        dbus-x11 \
-#        at-spi2-core \
-#        python-tk \
-#        python-pil.imagetk
-#    # && rm -rf /var/lib/apt/lists/*
+# Dockerのビルドに必要なツールのインストール
+#------------------------------------------------
+RUN apt-get update -q && apt-get upgrade -yq && apt-get install -y --no-install-recommends \
+        libglib2.0-dev-bin \
+        dh-python \
+        apt-utils \
+        python-pip \
+        lsb-release \
+        tzdata \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --upgrade pip
+
+# 依存ツール/ライブラリのインストール
+#------------------------------------------------
+RUN apt-get update -q && apt-get install -y --no-install-recommends \
+        ros-${ROS_DISTRO}-turtlebot3 \
+        ros-${ROS_DISTRO}-turtlebot3-msgs \
+        ros-${ROS_DISTRO}-turtlebot3-simulations \
+        ros-${ROS_DISTRO}-aruco-ros \
+    && rm -rf /var/lib/apt/lists/*
+
+# 依存ツール/ライブラリのインストール
+#------------------------------------------------
+RUN apt-get update -q && apt-get install -y --no-install-recommends \
+        gnome-terminal \
+        dbus-x11 \
+        at-spi2-core \
+        python-tk \
+        python-pil.imagetk \
+    && rm -rf /var/lib/apt/lists/*
 
 # 開発者ユーザーの追加
 #------------------------------------------------
