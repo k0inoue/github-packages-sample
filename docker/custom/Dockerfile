@@ -1,6 +1,6 @@
 FROM docker.pkg.github.com/k0inoue/github-packages-sample/gpack-base
 
-ENV DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN sudo apt-get update -q && sudo apt-get install -y --no-install-recommends \
     vim \
