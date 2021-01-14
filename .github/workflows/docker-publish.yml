@@ -14,33 +14,31 @@ on:
   pull_request:
 
 env:
-  # TODO: Change variable to your image's name.
   BASE_IMAGE_NAME: gpack-base
-  BASE_DOCKER_FILE: docker/base/Dockerfile 
+  BASE_DOCKER_FILE: docker/base/Dockerfile
+  CUSTOM_IMAGE_NAME: gpack-custom
+  CUSTOM_DOCKER_FILE: docker/custom/Dockerfile
 
 jobs:
-  # Run tests.
-  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-  test:
+  # Build & Run tests.
+  base-build-test:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Run tests
+      - name: Base Image Build and Tests
         run: |
-          if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file $BASE_DOCKER_FILE
-          fi
+            # build base image
+            docker build . --file $BASE_DOCKER_FILE --tag $BASE_IMAGE_NAME
 
-  # Push image to GitHub Packages.
-  # See also https://docs.docker.com/docker-hub/builds/
-  push:
+            # test base image
+            docker run $BASE_IMAGE_NAME echo "TEST ECHO: test base docker image"
+
+  # Push base image to GitHub Packages.
+  base-push:
     # Ensure test job passes before pushing image.
-    needs: test
+    needs: base-build-test
 
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
@@ -48,13 +46,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build image
+      - name: Build base image
         run: docker build . --file $BASE_DOCKER_FILE --tag $BASE_IMAGE_NAME
 
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
 
-      - name: Push image
+      - name: Push base image
         run: |
           IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$BASE_IMAGE_NAME
 
@@ -74,4 +72,59 @@ jobs:
           echo VERSION=$VERSION
 
           docker tag $BASE_IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+
+  # Run tests.
+  custom-build-test:
+    needs: base-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Custom Image Build and Tests
+        run: |
+            # build base image
+            docker build . --file $CUSTOM_DOCKER_FILE --tag $CUSTOM_IMAGE_NAME
+
+            # test base image
+            docker run $CUSTOM_IMAGE_NAME echo "TEST ECHO: test custom docker image"
+
+  # Push custom image to GitHub Packages.
+  custom-push:
+    # Ensure test job passes before pushing image.
+    needs: custom-build-test
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build base image
+        run: docker build . --file $CUSTOM_DOCKER_FILE --tag $CUSTOM_IMAGE_NAME
+
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+
+      - name: Push base image
+        run: |
+          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$CUSTOM_IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+
+          docker tag $CUSTOM_IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
