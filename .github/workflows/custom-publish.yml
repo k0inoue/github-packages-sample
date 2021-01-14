@@ -1,4 +1,4 @@
-name: Docker Publish
+name:  Docker Custom Image Build & Publish
 
 on:
   push:
@@ -11,77 +11,22 @@ on:
       - v*
 
     paths:
-    - 'docker/**'
-    - '.github/workflows/docker-publish.yml'
+      - 'docker/custom/**'
+      - '.github/workflows/custom-publish.yml'
 
   # Run tests for any PRs.
   pull_request:
     paths:
-    - 'docker/**'
-    - '.github/workflows/docker-publish.yml'
+      - 'docker/custom/**'
+      - '.github/workflows/custom-publish.yml'
 
 
 env:
   DOCKER_BUILDKIT: 1
-  BASE_IMAGE_NAME: gpack-base
-  BASE_DOCKER_FILE: docker/base/Dockerfile
   CUSTOM_IMAGE_NAME: gpack-custom
   CUSTOM_DOCKER_FILE: docker/custom/Dockerfile
 
 jobs:
-#   # Build & Run tests.
-#   base-build-test:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - uses: actions/checkout@v2
-
-#       - name: Base Image Build and Tests
-#         run: |
-#             # build base image
-#             docker build . --file $BASE_DOCKER_FILE --tag $BASE_IMAGE_NAME
-
-#             # test base image
-#             docker run $BASE_IMAGE_NAME echo "TEST ECHO: test base docker image"
-
-#   # Push base image to GitHub Packages.
-#   base-push:
-#     # Ensure test job passes before pushing image.
-#     needs: base-build-test
-
-#     runs-on: ubuntu-latest
-#     if: github.event_name == 'push'
-
-#     steps:
-#       - uses: actions/checkout@v2
-
-#       - name: Build base image
-#         run: docker build . --file $BASE_DOCKER_FILE --tag $BASE_IMAGE_NAME
-
-#       - name: Log into registry
-#         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-
-#       - name: Push base image
-#         run: |
-#           IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$BASE_IMAGE_NAME
-
-#           # Change all uppercase to lowercase
-#           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-
-#           # Strip git ref prefix from version
-#           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-
-#           # Strip "v" prefix from tag name
-#           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-
-#           # Use Docker `latest` tag convention
-#           [ "$VERSION" == "main" ] && VERSION=latest
-
-#           echo IMAGE_ID=$IMAGE_ID
-#           echo VERSION=$VERSION
-
-#           docker tag $BASE_IMAGE_NAME $IMAGE_ID:$VERSION
-#           docker push $IMAGE_ID:$VERSION
 
   # Run tests.
   custom-build-test:
