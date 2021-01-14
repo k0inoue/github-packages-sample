@@ -134,7 +134,7 @@ chmod 600 $HOME/.github-token
 docker build -t ローカルのイメージ名 -f ビルドするDockerfileパス .
 
 # ログイン
-cat .github-token | docker login docker.pkg.github.com --username GitHubユーザ名 --password-stdin
+cat $HOME/.github-token | docker login docker.pkg.github.com --username GitHubユーザ名 --password-stdin
 
 # タグ付け
 docker tag ローカルのイメージ名 docker.pkg.github.com/GitHubユーザ名/リポジトリ名/配布パッケージ名:タグ
