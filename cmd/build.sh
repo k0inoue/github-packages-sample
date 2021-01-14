@@ -4,7 +4,6 @@ SCRIPT_DIR=$(cd $(dirname $0); pwd)
 PJ_ROOT_DIR=$(cd $SCRIPT_DIR/../; pwd)
 . $SCRIPT_DIR/config.sh
 TAG=${1:-latest}
-PACKAGE_NAME=gpack-sample
 
 # docker build
 cd $PJ_ROOT_DIR
